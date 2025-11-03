@@ -1,59 +1,61 @@
 /* ==========================
    PRODUCTOS
 ========================== */
-const products = [
-  // Perfumes completos
+const fullPerfumes = [
   { id:'stronger-100', name:'Stronger With You Parfum', image:'img/stronger.jpg', size:'100ml', price:2499 },
   { id:'badboy-100', name:'Bad Boy (Carolina Herrera) Le Parfum', image:'img/badboy.jpg', size:'100ml', price:2499 },
   { id:'onenight-100', name:'One Night (Carlo Corinto Paris Man)', image:'img/onenight.jpg', size:'100ml', price:1000 },
-  { id:'explorer-100', name:'Montblanc Explorer Platinum', image:'img/explorer.jpg', size:'100ml', price:1500 },
+  { id:'explorer-100', name:'Montblanc Explorer Platinum', image:'img/explorer.jpg', size:'100ml', price:1500 }
+];
 
-  // Decants 10ml
-  { id:'stronger-10', name:'Stronger With You Parfum', image:'img/stronger.jpg', size:'10ml', price:250 },
-  { id:'badboy-10', name:'Bad Boy', image:'img/badboy.jpg', size:'10ml', price:250 },
-  { id:'onenight-10', name:'One Night', image:'img/onenight.jpg', size:'10ml', price:150 },
-  { id:'explorer-10', name:'Explorer Platinum', image:'img/explorer.jpg', size:'10ml', price:150 },
+const decants = [
+  { id:'stronger-10', name:'Stronger With You Parfum Decant', image:'img/stronger.jpg', size:'10ml', price:250 },
+  { id:'stronger-5', name:'Stronger With You Parfum Decant', image:'img/stronger.jpg', size:'5ml', price:150 },
+  { id:'stronger-3', name:'Stronger With You Parfum Decant', image:'img/stronger.jpg', size:'3ml', price:90 },
 
-  // Decants 5ml
-  { id:'stronger-5', name:'Stronger With You Parfum', image:'img/stronger.jpg', size:'5ml', price:150 },
-  { id:'badboy-5', name:'Bad Boy', image:'img/badboy.jpg', size:'5ml', price:150 },
-  { id:'onenight-5', name:'One Night', image:'img/onenight.jpg', size:'5ml', price:90 },
-  { id:'explorer-5', name:'Explorer Platinum', image:'img/explorer.jpg', size:'5ml', price:90 },
+  { id:'badboy-10', name:'Bad Boy Decant', image:'img/badboy.jpg', size:'10ml', price:250 },
+  { id:'badboy-5', name:'Bad Boy Decant', image:'img/badboy.jpg', size:'5ml', price:150 },
+  { id:'badboy-3', name:'Bad Boy Decant', image:'img/badboy.jpg', size:'3ml', price:90 },
 
-  // Decants 3ml
-  { id:'stronger-3', name:'Stronger With You Parfum', image:'img/stronger.jpg', size:'3ml', price:90 },
-  { id:'badboy-3', name:'Bad Boy', image:'img/badboy.jpg', size:'3ml', price:90 },
-  { id:'onenight-3', name:'One Night', image:'img/onenight.jpg', size:'3ml', price:50 },
-  { id:'explorer-3', name:'Explorer Platinum', image:'img/explorer.jpg', size:'3ml', price:50 }
+  { id:'onenight-10', name:'One Night Decant', image:'img/onenight.jpg', size:'10ml', price:150 },
+  { id:'onenight-5', name:'One Night Decant', image:'img/onenight.jpg', size:'5ml', price:90 },
+  { id:'onenight-3', name:'One Night Decant', image:'img/onenight.jpg', size:'3ml', price:50 },
+
+  { id:'explorer-10', name:'Explorer Platinum Decant', image:'img/explorer.jpg', size:'10ml', price:150 },
+  { id:'explorer-5', name:'Explorer Platinum Decant', image:'img/explorer.jpg', size:'5ml', price:90 },
+  { id:'explorer-3', name:'Explorer Platinum Decant', image:'img/explorer.jpg', size:'3ml', price:50 }
 ];
 
 /* ==========================
-   RENDER CATÁLOGO
+   RENDER CATALOGO
 ========================== */
-const fullGrid = document.getElementById('full-grid');
-const decantGrid = document.getElementById('decant-grid');
+const grid = document.getElementById('grid');
 
-products.forEach(p => {
-  const el = document.createElement('div');
-  el.className = "card rounded-2xl p-4 flex flex-col";
-  el.innerHTML = `
-    <div class="img-fit mb-4"><img src="${p.image}" alt="${p.name}"></div>
-    <div class="flex-1">
-      <div class="font-semibold text-white">${p.name}</div>
-      <div class="text-sm text-gray-300">${p.size}</div>
-      <div class="mt-3 text-white font-medium">$${p.price} MXN</div>
-    </div>
-    <div class="mt-4 flex gap-2">
-      <button class="flex-1 px-4 py-2 rounded-xl btn-accent" onclick='addToCart("${p.id}")'>Añadir</button>
-    </div>
-  `;
-  if(p.size === '100ml'){
-    fullGrid.appendChild(el);
-  } else {
-    el.querySelector('.font-semibold').innerText = `${p.name} - Decant`;
-    decantGrid.appendChild(el);
-  }
-});
+function renderCatalog(arr) {
+  grid.innerHTML = '';
+  arr.forEach(p => {
+    const el = document.createElement('div');
+    el.className = "card rounded-2xl p-4 flex flex-col";
+    el.innerHTML = `
+      <div class="img-fit mb-4"><img src="${p.image}" alt="${p.name}"></div>
+      <div class="flex-1">
+        <div class="font-semibold text-white">${p.name}</div>
+        <div class="text-sm text-gray-300">${p.size}</div>
+        <div class="mt-3 text-white font-medium">$${p.price} MXN</div>
+      </div>
+      <div class="mt-4 flex gap-2">
+        <button class="flex-1 px-4 py-2 rounded-xl btn-accent" onclick='addToCart("${p.id}")'>Añadir</button>
+      </div>
+    `;
+    grid.appendChild(el);
+  });
+}
+
+/* ==========================
+   MOSTRAR CATEGORIAS
+========================== */
+function showFullPerfumes(){ renderCatalog(fullPerfumes); }
+function showDecants(){ renderCatalog(decants); }
 
 /* ==========================
    CARRITO
@@ -62,7 +64,7 @@ let cart = JSON.parse(localStorage.getItem('ft_cart') || '[]');
 updateCartUI();
 
 function addToCart(id) {
-  const prod = products.find(x => x.id === id);
+  const prod = fullPerfumes.concat(decants).find(x => x.id === id);
   if(!prod) return;
   cart.push(prod);
   localStorage.setItem('ft_cart', JSON.stringify(cart));
@@ -114,16 +116,14 @@ function clearCart() {
    MODAL CARRITO
 ========================== */
 document.getElementById('open-cart').addEventListener('click', () => {
-  document.getElementById('cart-modal').classList.remove('hidden');
   document.getElementById('cart-modal').style.display = 'flex';
 });
 function closeCart() {
-  document.getElementById('cart-modal').classList.add('hidden');
   document.getElementById('cart-modal').style.display = 'none';
 }
 
 /* ==========================
-   CHECKOUT VIA WHATSAPP
+   CHECKOUT WHATSAPP
 ========================== */
 function checkoutWhatsApp() {
   if(cart.length === 0) { alert('Carrito vacío'); return; }
@@ -135,9 +135,14 @@ function checkoutWhatsApp() {
     mensaje += `- ${p.name} (${p.size}) - $${p.price} MXN\n`;
     total += p.price;
   });
-
   mensaje += `\nTotal: $${total} MXN`;
+
   const whatsappURL = `https://wa.me/526647813813?text=${encodeURIComponent(mensaje)}`;
   window.open(whatsappURL, '_blank');
 }
+
+/* ==========================
+   CARGAR PERFUMES COMPLETOS POR DEFECTO
+========================== */
+showFullPerfumes();
 
